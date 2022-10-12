@@ -1,8 +1,8 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 
 interface IUser {
   userName: string;
-  phid: string;
+  phId: string;
 }
 
 const userSchema = new Schema<IUser>(
@@ -12,7 +12,7 @@ const userSchema = new Schema<IUser>(
       unique: true,
       required: true,
     },
-    phid: {
+    phId: {
       type: String,
       unique: true,
       required: true,
@@ -21,6 +21,6 @@ const userSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
-const User = model<IUser>('user', userSchema);
+const User = models.user || model<IUser>('user', userSchema);
 
 export default User;
