@@ -51,6 +51,7 @@ const startServer = async (): Promise<void> => {
   });
   app.listen(port, () => {
     console.log(`Express server listeting on port ${port}`);
+    console.log(`Express server listeting on port ${port}`);
   });
 };
 

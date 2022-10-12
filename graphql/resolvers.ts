@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
 import User from '../database/models/user';
 import Token from '../database/models/token';
 
@@ -38,13 +37,44 @@ const getStatus = (token: string, tokens: string[]): number => {
   return isValidToken(token) && tokens.length === 0 ? 200 : 401;
 };
 
+const verifyUserName = async (userName: string) => {
+  return userName === 'Random' ? false : true;
+};
+
+const addUser = async (userName: string) => {
+  const isValidUsername = await verifyUserName(userName); // add Phabricator check here
+  if (isValidUsername) {
+    await User.create({
+      userName: userName,
+    });
+  } else {
+    throw new Error('UserName not found in Phabricator');
+  }
+};
+
 const resolvers = {
   Query: {
-    async getUserByEmail(_: any, args: any): Promise<object> {
+    async getUserByUserName(_: any, args: any): Promise<object> {
       const {
-        input: { email },
+        input: { userName },
       } = args;
-      return User.findOne({ email });
+      const isValidUsername = await verifyUserName(userName);
+      if (!isValidUsername) {
+        return {};
+      }
+      try {
+        const user = await User.findOne({
+          userName,
+        });
+        if (!user) {
+          await User.create({
+            userName: userName,
+          });
+        }
+      } catch (error) {
+        throw new Error(error.message);
+      }
+      return User.findOne({ userName });
     },
     async isAuthenticated(_: any, _args: any, ctx: any): Promise<object> {
       const token: string = ctx.req.cookies['x-access-token'];
@@ -67,58 +97,32 @@ const resolvers = {
     },
   },
   Mutation: {
-    createUser: async (_: any, args: any, ctx: any): Promise<object> => {
+    signInUser: async (_: any, args: any, ctx: any): Promise<object> => {
       const {
-        input: { email, password },
+        input: { userName },
       } = args;
-      const salt = bcrypt.genSaltSync(10);
-      try {
-        const user = await User.create({
-          email,
-          password: bcrypt.hashSync(password, salt),
-        });
 
-        const token = await jwt.sign(
-          { _id: user._id, email: user.email },
+      try {
+        let user = await User.findOne({
+          userName,
+        });
+        if (!user) {
+          await addUser(userName);
+          user = await User.findOne({
+            userName,
+          });
+        }
+        const token = jwt.sign(
+          { _id: user._id, email: user.userName },
           process.env.JWT_SECRET,
           {
             expiresIn: '1d',
           }
         );
         ctx.res.cookie(TOKEN_KEY, JSON.stringify(token), cookieOpts);
-        return {
-          token,
-        };
-      } catch (error) {
-        throw new Error(error.message);
-      }
-    },
-    signInUser: async (_: any, args: any, ctx: any): Promise<object> => {
-      const {
-        input: { email, password },
-      } = args;
 
-      try {
-        const user = await User.findOne({
-          email,
-        });
-
-        const isValidPassword: boolean = bcrypt.compareSync(
-          password,
-          user.password
-        );
-        if (isValidPassword) {
-          const token = jwt.sign(
-            { _id: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            {
-              expiresIn: '1d',
-            }
-          );
-          ctx.res.cookie(TOKEN_KEY, JSON.stringify(token), cookieOpts);
-        }
         return {
-          isAuthenticated: isValidPassword,
+          isAuthenticated: true,
         };
       } catch (error) {
         throw new Error(error.message);

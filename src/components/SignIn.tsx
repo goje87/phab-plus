@@ -2,27 +2,24 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 import { SIGN_IN_USER } from '../graphql/mutations';
-import { IEnterPassword } from '../common/interfaces/form.interface';
+import { IEnterUserName } from '../common/interfaces/form.interface';
 
 import {
   Form,
-  Email,
   NextButton,
   ButtonWrap,
   Heading,
   Container,
   InputField,
   HeadingWrap,
+  EmailError,
 } from '../styles/Authenticate.style';
 
-interface IProps {
-  email: string;
-}
-
-export const SignIn = ({ email }: IProps): JSX.Element => {
+export const SignIn = (): JSX.Element => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm();
 
@@ -34,29 +31,31 @@ export const SignIn = ({ email }: IProps): JSX.Element => {
     },
     onError: (err: any) => {
       console.log('sign in error', err.message);
+      setError('userName', err.message);
     },
   });
 
-  const onSubmit = ({ password }: IEnterPassword) => {
-    signInUser({ variables: { email, password } });
+  const onSubmit = ({ userName }: IEnterUserName) => {
+    signInUser({ variables: { userName } });
   };
 
   return (
     <Container>
       <>
         <HeadingWrap>
-          <Heading isWelcome={true}>Welcome back</Heading>
-          <Heading isWelcome={false}>Enter Password</Heading>
+          <Heading isWelcome={true}>Welcome to Phabricator++</Heading>
+          <Heading isWelcome={false}>Enter your Phabricator username</Heading>
         </HeadingWrap>
         <Form>
-          <Email>{email}</Email>
           <InputField
-            type='password'
+            type='text'
             pushDown={true}
-            placeholder='Enter Password'
-            {...register('password', { required: true })}
+            placeholder='Enter username'
+            {...register('userName', { required: true })}
           />
-          {errors.password && <p>Password is required.</p>}
+          {errors.userName && (
+            <EmailError>Enter correct phabricator userName</EmailError>
+          )}
         </Form>
         <ButtonWrap>
           <NextButton onClick={handleSubmit(onSubmit)}>Sign In</NextButton>

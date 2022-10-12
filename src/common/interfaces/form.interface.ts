@@ -2,6 +2,6 @@ export interface IEnterEmail {
   email: string;
 }
 
-export interface IEnterPassword {
-  password: string;
+export interface IEnterUserName {
+  userName: string;
 }

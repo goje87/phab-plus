@@ -1,13 +1,9 @@
 import * as React from 'react';
-import { EnterEmail } from './EnterEmail';
-import { CreateAccount } from './CreateAccount';
 import { useAuth } from '../hooks/useAuth';
 import { SignIn } from './SignIn';
 
 export const Authenticate = (): JSX.Element => {
   const auth = useAuth();
-  const [email, setEmail] = React.useState<string>('');
-  const [view, setView] = React.useState<string>('enterEmail');
   const [isLoaded, setIsLoaded] = React.useState(false);
 
   React.useEffect(() => {
@@ -18,21 +14,10 @@ export const Authenticate = (): JSX.Element => {
     }
   }, [auth]);
 
-  const onToggleView = (type: string, email: string) => {
-    setEmail(email);
-    setView(type);
-  };
-
   return (
     <>
       {!isLoaded && null}
-      {isLoaded && (
-        <>
-          {view === 'enterEmail' && <EnterEmail onToggleView={onToggleView} />}
-          {view === 'createAccount' && <CreateAccount email={email} />}
-          {view === 'signIn' && <SignIn email={email} />}
-        </>
-      )}
+      {isLoaded && <SignIn />}
     </>
   );
 };

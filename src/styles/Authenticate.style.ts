@@ -20,6 +20,9 @@ export const Form = styled.form`
 export const HeadingWrap = styled.div`
   text-align: left;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 export const Email = styled.p`
@@ -29,9 +32,9 @@ export const Email = styled.p`
 `;
 
 export const Heading = styled.h1<{ isWelcome: boolean }>`
-  color: white;
   text-transform: uppercase;
-  font-size: ${props => (props.isWelcome ? '0.8rem' : '1.1rem')};
+  font-size: ${props => (props.isWelcome ? '1.1rem' : '0.8rem')};
+  color: ${props => (props.isWelcome ? 'white' : '#dbd6d6')};
   letter-spacing: 2px;
   margin-bottom: ${props => (props.isWelcome ? '0' : '0.1rem')};
 `;
@@ -96,7 +99,6 @@ export const NextButton = styled.button`
 `;
 
 export const EmailError = styled.p`
-  position: absolute;
   color: #ffbf6b;
   text-align: left;
   margin-top: 0.2rem;

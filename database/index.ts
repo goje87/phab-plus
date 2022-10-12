@@ -17,6 +17,7 @@ export const db: Database = {
     mongoose.connection.on('error', err => {
       console.error(err);
     });
+    console.log(db.generateUri());
     await mongoose.connect(db.generateUri(), {
       keepAlive: true,
       keepAliveInitialDelay: 300000,

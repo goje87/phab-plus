@@ -9,8 +9,8 @@ export const CREATE_USER = gql`
 `;
 
 export const SIGN_IN_USER = gql`
-  mutation SignInUser($email: String!, $password: String!) {
-    signInUser(input: { email: $email, password: $password }) {
+  mutation SignInUser($userName: String!) {
+    signInUser(input: { userName: $userName }) {
       isAuthenticated
     }
   }

@@ -4,9 +4,7 @@ const typeDefs = gql`
   scalar Date
   type User {
     _id: String!
-    email: String
-    password: String
-    cretedAt: Date
+    userName: String!
   }
   type IsAuthenticated {
     status: Int!
@@ -17,24 +15,22 @@ const typeDefs = gql`
   type CreateAccountPayload {
     _id: String!
     token: String!
-    email: String!
+    userName: String!
   }
   input UserCredens {
-    email: String!
-    password: String!
+    userName: String!
   }
-  input GetUserByEmail {
-    email: String!
+  input getUserByUserName {
+    userName: String!
   }
   type SignOutUser {
     status: Int!
   }
   type Query {
-    getUserByEmail(input: GetUserByEmail): User
+    getUserByUserName(input: getUserByUserName): User
     isAuthenticated: IsAuthenticated
   }
   type Mutation {
-    createUser(input: UserCredens): CreateAccountPayload!
     signInUser(input: UserCredens): SignIn!
     signOutUser: SignOutUser!
   }
