@@ -99,7 +99,7 @@ export const NeedMyReviewDiffs = (): JSX.Element => {
                   <DifferentialListItem
                     key={diff}
                     diff={diff}
-                    status={DiffStates.READY_FOR_REVIEW}
+                    status={DiffStates.UP_FOR_REVIEW}
                     nextStates={[
                       DiffStates.CHANGES_REQUESTED,
                       DiffStates.ACCEPTED,

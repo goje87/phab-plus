@@ -109,7 +109,7 @@ export const MyDiffs = (): JSX.Element => {
                   key={diff}
                   diff={diff}
                   status={DiffStates.DRAFT}
-                  nextStates={[DiffStates.READY_FOR_REVIEW]}
+                  nextStates={[DiffStates.UP_FOR_REVIEW]}
                 />
               ))}
             </List>
@@ -130,7 +130,7 @@ export const MyDiffs = (): JSX.Element => {
               <DifferentialListItem
                 key={diff}
                 diff={diff}
-                status={DiffStates.READY_FOR_REVIEW}
+                status={DiffStates.UP_FOR_REVIEW}
                 nextStates={[DiffStates.DRAFT]}
               />
             ))}
@@ -152,7 +152,7 @@ export const MyDiffs = (): JSX.Element => {
                 key={diff}
                 diff={diff}
                 status={DiffStates.CHANGES_REQUESTED}
-                nextStates={[DiffStates.READY_FOR_REVIEW, DiffStates.DRAFT]}
+                nextStates={[DiffStates.UP_FOR_REVIEW, DiffStates.DRAFT]}
               />
             ))}
           </List>

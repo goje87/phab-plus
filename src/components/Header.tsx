@@ -31,11 +31,16 @@ export const Header = () => {
       position='static'
       style={{
         backgroundColor: 'white',
+        padding: '0 32px',
       }}
     >
-      <Container maxWidth='xl'>
+      <Container
+        style={{
+          maxWidth: `calc(100vw - 32px)`,
+        }}
+      >
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: 'flex', mr: 1 }} color='primary' />
+          <img src='' />
           <Typography
             variant='h5'
             noWrap

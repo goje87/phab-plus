@@ -6,16 +6,20 @@ import {
   ListItemAvatar,
   Avatar,
   ListItemText,
+  Chip,
+  CircularProgress,
+  Link,
 } from '@mui/material';
 import React from 'react';
-import {
-  FolderCopyOutlined,
-  RunningWithErrorsOutlined,
-} from '@mui/icons-material';
+import { FolderCopyOutlined } from '@mui/icons-material';
+import { useMutation } from '@apollo/client';
+import { CHANGE_DIFF_STATUS } from '../graphql/mutations';
+import { GET_DIFFERENTIALS } from '../graphql/queries';
+import { getOperationName } from '@apollo/client/utilities';
 
 export enum DiffStates {
   DRAFT = 'DRAFT',
-  READY_FOR_REVIEW = 'READY_FOR_REVIEW',
+  UP_FOR_REVIEW = 'UP_FOR_REVIEW',
   CHANGES_REQUESTED = 'CHANGES_REQUESTED',
   READY_TO_SAIL = 'READY_TO_SAIL',
   ACCEPTED = 'ACCEPTED',
@@ -23,7 +27,7 @@ export enum DiffStates {
 
 const diffStatesText = {
   [DiffStates.DRAFT]: 'Draft',
-  [DiffStates.READY_FOR_REVIEW]: 'Ready for Review',
+  [DiffStates.UP_FOR_REVIEW]: 'Ready for Review',
   [DiffStates.CHANGES_REQUESTED]: 'Changes Requested / Commented',
   [DiffStates.READY_TO_SAIL]: 'Ready to sail',
   [DiffStates.ACCEPTED]: 'Accepted',
@@ -34,9 +38,15 @@ export enum SlaBridgeStatus {
   WARNING = 'WARNING',
 }
 
-const statusIcon = {
-  [SlaBridgeStatus.ERROR]: <RunningWithErrorsOutlined color='error' />,
-  [SlaBridgeStatus.WARNING]: <RunningWithErrorsOutlined color='info' />,
+const slaBridgeStatusMap = {
+  [SlaBridgeStatus.ERROR]: {
+    label: 'SLA Breached',
+    color: 'error',
+  },
+  [SlaBridgeStatus.WARNING]: {
+    label: 'nearing SLA',
+    color: 'warning',
+  },
 };
 
 export const DifferentialListItem = ({
@@ -54,6 +64,10 @@ export const DifferentialListItem = ({
   slaBridgeStatus?: SlaBridgeStatus;
   nextStates: ReadonlyArray<DiffStates>;
 }): JSX.Element => {
+  const [changeStatus, { loading }] = useMutation(CHANGE_DIFF_STATUS, {
+    refetchQueries: [getOperationName(GET_DIFFERENTIALS)],
+    awaitRefetchQueries: true,
+  });
   return (
     <ListItem
       secondaryAction={
@@ -62,6 +76,16 @@ export const DifferentialListItem = ({
             labelId='demo-select-small'
             id='demo-select-small'
             value={status}
+            onChange={(event: any) => {
+              changeStatus({
+                variables: {
+                  input: {
+                    diffId: diff.diffId,
+                    status: event.target.value,
+                  },
+                },
+              });
+            }}
           >
             <MenuItem value={status} disabled>
               <em>{diffStatesText[status]}</em>
@@ -76,8 +100,8 @@ export const DifferentialListItem = ({
       }
     >
       <ListItemAvatar>
-        {slaBridgeStatus ? (
-          statusIcon[slaBridgeStatus]
+        {loading ? (
+          <CircularProgress size='small' />
         ) : (
           <Avatar>
             <FolderCopyOutlined />
@@ -86,8 +110,28 @@ export const DifferentialListItem = ({
       </ListItemAvatar>
 
       <ListItemText
-        primary={diff.title}
-        secondary={`https://phabricator.rubrik.com/${diff.diffId}`}
+        primary={
+          <div>
+            {diff.title}
+            {slaBridgeStatus && (
+              <Chip
+                label={slaBridgeStatusMap[slaBridgeStatus].label}
+                size='small'
+                style={{ marginLeft: '10px' }}
+                color={
+                  slaBridgeStatusMap[slaBridgeStatus].color as
+                    | 'error'
+                    | 'warning'
+                }
+              />
+            )}
+          </div>
+        }
+        secondary={
+          <Link target='_blank' href={diff.url}>
+            {diff.url}
+          </Link>
+        }
       />
     </ListItem>
   );
