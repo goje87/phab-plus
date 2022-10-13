@@ -22,6 +22,7 @@ export const GlobalStyle = createGlobalStyle`
 export const ContainerWithCenter = styled.div`
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: 0 auto;

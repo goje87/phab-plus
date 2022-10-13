@@ -23,3 +23,11 @@ export const SIGN_OUT_USER = gql`
     }
   }
 `;
+
+export const CHANGE_DIFF_STATUS = gql`
+  mutation ChangeDiffStatus($input: ChangeDiffStatusInput) {
+    changeDiffStatus(input: $input) {
+      success
+    }
+  }
+`;

@@ -16,6 +16,7 @@ import {
 } from '../styles/Authenticate.style';
 import { PageWrapper } from './PageWrapper';
 import { ContainerWithCenter } from '../App.style';
+import { ROUTES, routes } from '../routes';
 
 export const SignIn = (): JSX.Element => {
   const {
@@ -28,7 +29,7 @@ export const SignIn = (): JSX.Element => {
   const [signInUser] = useMutation(SIGN_IN_USER, {
     onCompleted: (res: any) => {
       if (res?.signInUser.isAuthenticated) {
-        window.location.href = '/dashboard';
+        window.location.href = routes[ROUTES.MY_DIFFS].path;
       }
     },
     onError: (err: any) => {
@@ -42,8 +43,8 @@ export const SignIn = (): JSX.Element => {
   };
 
   return (
-    <PageWrapper showHeader={false}>
-      <ContainerWithCenter>
+    <ContainerWithCenter>
+      <div style={{ width: '500px' }}>
         <HeadingWrap>
           <Heading isWelcome={true}>Welcome to Phabricator++</Heading>
           <Heading isWelcome={false}>Enter your Phabricator username</Heading>
@@ -62,7 +63,7 @@ export const SignIn = (): JSX.Element => {
         <ButtonWrap>
           <NextButton onClick={handleSubmit(onSubmit)}>Sign In</NextButton>
         </ButtonWrap>
-      </ContainerWithCenter>
-    </PageWrapper>
+      </div>
+    </ContainerWithCenter>
   );
 };

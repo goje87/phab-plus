@@ -43,6 +43,10 @@ const typeDefs = gql`
   input getUserByUserName {
     userName: String!
   }
+  input ChangeDiffStatusInput {
+    diffId: String!
+    status: DifferentialStatus!
+  }
   type SignOutUser {
     status: Int!
   }
@@ -57,6 +61,7 @@ const typeDefs = gql`
   type Mutation {
     signInUser(input: UserCredens): SignIn!
     signOutUser: SignOutUser!
+    changeDiffStatus(input: ChangeDiffStatusInput): Success!
   }
 `;
 
