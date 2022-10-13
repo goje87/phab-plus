@@ -15,6 +15,7 @@ import {
   EmailError,
 } from '../styles/Authenticate.style';
 import { PageWrapper } from './PageWrapper';
+import { ContainerWithCenter } from '../App.style';
 
 export const SignIn = (): JSX.Element => {
   const {
@@ -42,7 +43,7 @@ export const SignIn = (): JSX.Element => {
 
   return (
     <PageWrapper showHeader={false}>
-      <>
+      <ContainerWithCenter>
         <HeadingWrap>
           <Heading isWelcome={true}>Welcome to Phabricator++</Heading>
           <Heading isWelcome={false}>Enter your Phabricator username</Heading>
@@ -61,7 +62,7 @@ export const SignIn = (): JSX.Element => {
         <ButtonWrap>
           <NextButton onClick={handleSubmit(onSubmit)}>Sign In</NextButton>
         </ButtonWrap>
-      </>
+      </ContainerWithCenter>
     </PageWrapper>
   );
 };

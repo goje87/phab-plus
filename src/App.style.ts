@@ -19,7 +19,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export const Container = styled.div`
+export const ContainerWithCenter = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -29,6 +29,13 @@ export const Container = styled.div`
   height: 100vh;
   font-size: 1rem;
   background-image: linear-gradient(to right, #03045e, #023e8a, #0077b6);
+`;
+
+export const Container = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  font-size: 1rem;
 `;
 
 export const Navbar = styled.nav`

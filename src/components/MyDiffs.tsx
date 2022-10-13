@@ -1,26 +1,16 @@
+import { useLazyQuery, useQuery } from '@apollo/client';
 import * as React from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { SIGN_OUT_USER } from '../graphql/mutations';
-import { Container, Heading } from '../styles/Dashboard.style';
-import { NextButton, ButtonWrap } from '../styles/Authenticate.style';
 import { GET_DIFFERENTIALS } from '../graphql/queries';
-import Header from './Header';
+import { useAuth } from '../hooks/useAuth';
+import { NextButton } from '../styles/Authenticate.style';
+import { Container } from '../styles/Dashboard.style';
 import { PageWrapper } from './PageWrapper';
 
 export const MyDiffs = (): JSX.Element => {
   const auth = useAuth();
   const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
-
   const redirect = (path: string) => (window.location.href = path);
-
-  const [signOutUser] = useMutation(SIGN_OUT_USER, {
-    onCompleted: (): void => {
-      redirect('/');
-    },
-  });
-
-  const [getDifferentials] = useLazyQuery(GET_DIFFERENTIALS, {
+  const { loading, error, data } = useQuery(GET_DIFFERENTIALS, {
     variables: {
       differentialType: 'AUTHORED',
     },
@@ -33,20 +23,10 @@ export const MyDiffs = (): JSX.Element => {
       redirect('/');
     }
   }, [auth]);
-  return (
-    <PageWrapper showHeader>
-      {!isLoaded && null}
-      {isLoaded && (
-        <Container>
-          <NextButton onClick={() => getDifferentials()}>callQuery</NextButton>
-          <Heading className='animate__animated animate__fadeInDown'>
-            Authenticated
-          </Heading>
-          <ButtonWrap style={{ width: 'unset' }}>
-            <NextButton onClick={() => signOutUser()}>Sign Out</NextButton>
-          </ButtonWrap>
-        </Container>
-      )}
-    </PageWrapper>
-  );
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  return <PageWrapper showHeader></PageWrapper>;
 };

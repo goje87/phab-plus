@@ -1,34 +1,33 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
+import { useMutation } from '@apollo/client';
 import AdbIcon from '@mui/icons-material/Adb';
-import { routes } from '../routes';
-import Tabs from '@mui/material/Tabs';
+import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
 import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { SIGN_OUT_USER } from '../graphql/mutations';
+import { useAuth } from '../hooks/useAuth';
+import { routes } from '../routes';
 
 const settings = ['Sign Out'];
 
 export const Header = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const handleOpenUserMenu = (event: any) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+  const redirect = (path: string) => (window.location.href = path);
+  const [signOutUser] = useMutation(SIGN_OUT_USER, {
+    onCompleted: (): void => {
+      redirect('/');
+    },
+  });
 
   return (
     <AppBar
@@ -82,34 +81,15 @@ export const Header = () => {
             ))}
           </Tabs>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, display: 'flex' }}>
             <Tooltip title='Open settings'>
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton sx={{ p: 0 }}>
                 <Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
               </IconButton>
             </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id='menu-appbar'
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map(setting => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign='center'>{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            <Button variant='text' onClick={() => signOutUser()}>
+              Sign Out
+            </Button>
           </Box>
         </Toolbar>
       </Container>
