@@ -14,6 +14,7 @@ import {
   HeadingWrap,
   EmailError,
 } from '../styles/Authenticate.style';
+import { PageWrapper } from './PageWrapper';
 
 export const SignIn = (): JSX.Element => {
   const {
@@ -40,7 +41,7 @@ export const SignIn = (): JSX.Element => {
   };
 
   return (
-    <Container>
+    <PageWrapper showHeader={false}>
       <>
         <HeadingWrap>
           <Heading isWelcome={true}>Welcome to Phabricator++</Heading>
@@ -61,6 +62,6 @@ export const SignIn = (): JSX.Element => {
           <NextButton onClick={handleSubmit(onSubmit)}>Sign In</NextButton>
         </ButtonWrap>
       </>
-    </Container>
+    </PageWrapper>
   );
 };

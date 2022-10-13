@@ -5,8 +5,10 @@ import { SIGN_OUT_USER } from '../graphql/mutations';
 import { Container, Heading } from '../styles/Dashboard.style';
 import { NextButton, ButtonWrap } from '../styles/Authenticate.style';
 import { GET_DIFFERENTIALS } from '../graphql/queries';
+import Header from './Header';
+import { PageWrapper } from './PageWrapper';
 
-export const Dashboard = (): JSX.Element => {
+export const NeedMyReviewDiffs = (): JSX.Element => {
   const auth = useAuth();
   const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
 
@@ -32,7 +34,7 @@ export const Dashboard = (): JSX.Element => {
     }
   }, [auth]);
   return (
-    <>
+    <PageWrapper showHeader>
       {!isLoaded && null}
       {isLoaded && (
         <Container>
@@ -45,6 +47,6 @@ export const Dashboard = (): JSX.Element => {
           </ButtonWrap>
         </Container>
       )}
-    </>
+    </PageWrapper>
   );
 };

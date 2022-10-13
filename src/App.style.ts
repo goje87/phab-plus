@@ -37,14 +37,8 @@ export const Navbar = styled.nav`
   justify-content: space-between;
   top: 0;
   left: 0;
-  height: 50px;
   width: 100%;
-  padding: 1rem;
   box-sizing: border-box;
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-  }
 `;
 
 export const Heading = styled.h1`
