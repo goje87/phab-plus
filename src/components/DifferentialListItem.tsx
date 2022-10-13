@@ -8,7 +8,10 @@ import {
   ListItemText,
 } from '@mui/material';
 import React from 'react';
-import FolderIcon from '@mui/icons-material/Folder';
+import {
+  FolderCopyOutlined,
+  RunningWithErrorsOutlined,
+} from '@mui/icons-material';
 
 export enum DiffStates {
   DRAFT = 'DRAFT',
@@ -26,13 +29,29 @@ const diffStatesText = {
   [DiffStates.ACCEPTED]: 'Accepted',
 };
 
+export enum SlaBridgeStatus {
+  ERROR = 'ERROR',
+  WARNING = 'WARNING',
+}
+
+const statusIcon = {
+  [SlaBridgeStatus.ERROR]: <RunningWithErrorsOutlined color='error' />,
+  [SlaBridgeStatus.WARNING]: <RunningWithErrorsOutlined color='info' />,
+};
+
 export const DifferentialListItem = ({
-  diffId,
+  diff,
   status,
   nextStates,
+  slaBridgeStatus,
 }: {
-  diffId: string;
+  diff: {
+    diffId: string;
+    url: string;
+    title: string;
+  };
   status: DiffStates;
+  slaBridgeStatus?: SlaBridgeStatus;
   nextStates: ReadonlyArray<DiffStates>;
 }): JSX.Element => {
   return (
@@ -57,13 +76,18 @@ export const DifferentialListItem = ({
       }
     >
       <ListItemAvatar>
-        <Avatar>
-          <FolderIcon />
-        </Avatar>
+        {slaBridgeStatus ? (
+          statusIcon[slaBridgeStatus]
+        ) : (
+          <Avatar>
+            <FolderCopyOutlined />
+          </Avatar>
+        )}
       </ListItemAvatar>
+
       <ListItemText
-        primary={diffId}
-        secondary={`https://phabricator.rubrik.com/${diffId}`}
+        primary={diff.title}
+        secondary={`https://phabricator.rubrik.com/${diff.diffId}`}
       />
     </ListItem>
   );

@@ -77,6 +77,20 @@ const transformPhabricatorDiff = (
   }));
 };
 
+const transformPhabricatorDiffForNeedMyReview = (
+  diffs: Array<any>,
+  diffType: DifferentialType
+): Array<IDifferential> => {
+  return diffs.map(diff => ({
+    diffId: diff.id,
+    diffType: diffType,
+    status: DifferentialStatus.UP_FOR_REVIEW,
+    title: diff.title,
+    url: diff.uri,
+    authoredBy: diff.authorPHID,
+  }));
+};
+
 const addUser = async (userName: string) => {
   const userData = await getUserDetailsFromPhabricator(userName);
   if (userData) {
@@ -138,13 +152,12 @@ const resolvers = {
             const authoredDiffs = await getNeedMyReviewDiffsFromPhabricator(
               phid
             );
-            const formattedDiffs = transformPhabricatorDiff(
+            const formattedDiffs = transformPhabricatorDiffForNeedMyReview(
               authoredDiffs,
               differentialType
             );
             await insertDiffs(formattedDiffs);
             return Differential.find({
-              authoredBy: phid,
               diffType: differentialType,
               $or: [
                 { status: DifferentialStatus.UP_FOR_REVIEW },
@@ -213,3 +226,12 @@ const resolvers = {
 };
 
 export default resolvers;
+
+/**
+ * 
+ * 
+ * {"$or": [
+                { "status": "UP_FOR_REVIEW" },
+                { "status": "CHANGES_REQUESTED" },
+              ]}
+ */

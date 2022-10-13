@@ -1,17 +1,21 @@
 import { useQuery } from '@apollo/client';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { ErrorOutline } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   List,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import * as React from 'react';
 import { GET_DIFFERENTIALS } from '../graphql/queries';
 import { useAuth } from '../hooks/useAuth';
 import { DifferentialListItem, DiffStates } from './DifferentialListItem';
 import { PageWrapper } from './PageWrapper';
+import { ContainerWithCenter } from '../App.style';
+import { DifferentialStatus } from '../App.types';
 
 const draftDiffs = ['D12345', 'D47567', 'D58048'];
 const reviewDiffs = ['D80960', 'D48394', 'D79274'];
@@ -40,6 +44,53 @@ export const MyDiffs = (): JSX.Element => {
     return null;
   }
 
+  if (loading) {
+    return (
+      <PageWrapper showHeader>
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <CircularProgress />
+        </div>
+      </PageWrapper>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <PageWrapper showHeader>
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <ErrorOutline /> Something Went Wrong
+        </div>
+      </PageWrapper>
+    );
+  }
+
+  const draftDiffs = data.getDifferentials.filter(
+    diff => diff.status === DifferentialStatus.DRAFT
+  );
+  const reviewDiffs = data.getDifferentials.filter(
+    diff => diff.status === DifferentialStatus.UP_FOR_REVIEW
+  );
+  const commentedDiffs = data.getDifferentials.filter(
+    diff => diff.status === DifferentialStatus.CHANGES_REQUESTED
+  );
+  const sailDiffs = data.getDifferentials.filter(
+    diff => diff.status === DifferentialStatus.ACCEPTED
+  );
+
   return (
     <PageWrapper showHeader>
       <Accordion defaultExpanded>
@@ -56,7 +107,7 @@ export const MyDiffs = (): JSX.Element => {
               {draftDiffs.map(diff => (
                 <DifferentialListItem
                   key={diff}
-                  diffId={diff}
+                  diff={diff}
                   status={DiffStates.DRAFT}
                   nextStates={[DiffStates.READY_FOR_REVIEW]}
                 />
@@ -78,7 +129,7 @@ export const MyDiffs = (): JSX.Element => {
             {reviewDiffs.map(diff => (
               <DifferentialListItem
                 key={diff}
-                diffId={diff}
+                diff={diff}
                 status={DiffStates.READY_FOR_REVIEW}
                 nextStates={[DiffStates.DRAFT]}
               />
@@ -99,7 +150,7 @@ export const MyDiffs = (): JSX.Element => {
             {commentedDiffs.map(diff => (
               <DifferentialListItem
                 key={diff}
-                diffId={diff}
+                diff={diff}
                 status={DiffStates.CHANGES_REQUESTED}
                 nextStates={[DiffStates.READY_FOR_REVIEW, DiffStates.DRAFT]}
               />
@@ -107,7 +158,7 @@ export const MyDiffs = (): JSX.Element => {
           </List>
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+      <Accordion disabled={sailDiffs.length === 0}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel1a-content'
@@ -120,7 +171,7 @@ export const MyDiffs = (): JSX.Element => {
             {sailDiffs.map(diff => (
               <DifferentialListItem
                 key={diff}
-                diffId={diff}
+                diff={diff}
                 status={DiffStates.READY_TO_SAIL}
                 nextStates={[DiffStates.DRAFT]}
               />

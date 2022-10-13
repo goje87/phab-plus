@@ -37,6 +37,9 @@ export const Container = styled.div`
   width: 100%;
   height: 100vh;
   font-size: 1rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 `;
 
 export const Navbar = styled.nav`

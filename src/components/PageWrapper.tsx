@@ -5,6 +5,9 @@ import Header from './Header';
 
 const Content = styled.div`
   padding: 98px 32px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 `;
 
 export const PageWrapper: React.FC<{ showHeader: boolean }> = ({

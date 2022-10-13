@@ -1,16 +1,21 @@
 import { useQuery } from '@apollo/client';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { ExpandMoreIcon, ErrorOutline } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   List,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import * as React from 'react';
 import { GET_DIFFERENTIALS } from '../graphql/queries';
 import { useAuth } from '../hooks/useAuth';
-import { DifferentialListItem, DiffStates } from './DifferentialListItem';
+import {
+  DifferentialListItem,
+  DiffStates,
+  SlaBridgeStatus,
+} from './DifferentialListItem';
 import { PageWrapper } from './PageWrapper';
 
 const needReview = ['D12345', 'D47567', 'D58048'];
@@ -21,7 +26,7 @@ export const NeedMyReviewDiffs = (): JSX.Element => {
   const redirect = (path: string) => (window.location.href = path);
   const { loading, error, data } = useQuery(GET_DIFFERENTIALS, {
     variables: {
-      differentialType: 'AUTHORED',
+      differentialType: 'NEED_MY_REVIEW',
     },
   });
 
@@ -37,6 +42,41 @@ export const NeedMyReviewDiffs = (): JSX.Element => {
     return null;
   }
 
+  if (loading) {
+    return (
+      <PageWrapper showHeader>
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <CircularProgress />
+        </div>
+      </PageWrapper>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <PageWrapper showHeader>
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <ErrorOutline /> Something Went Wrong
+        </div>
+      </PageWrapper>
+    );
+  }
+
   return (
     <PageWrapper showHeader>
       <Accordion expanded>
@@ -46,17 +86,34 @@ export const NeedMyReviewDiffs = (): JSX.Element => {
         <AccordionDetails>
           <Typography>
             <List>
-              {needReview.map(diff => (
-                <DifferentialListItem
-                  key={diff}
-                  diffId={diff}
-                  status={DiffStates.READY_FOR_REVIEW}
-                  nextStates={[
-                    DiffStates.CHANGES_REQUESTED,
-                    DiffStates.ACCEPTED,
-                  ]}
-                />
-              ))}
+              {data.getDifferentials.map((diff, index) => {
+                console.log(
+                  index,
+                  index < 2
+                    ? SlaBridgeStatus.ERROR
+                    : index < 5
+                    ? SlaBridgeStatus.WARNING
+                    : undefined
+                );
+                return (
+                  <DifferentialListItem
+                    key={diff}
+                    diff={diff}
+                    status={DiffStates.READY_FOR_REVIEW}
+                    nextStates={[
+                      DiffStates.CHANGES_REQUESTED,
+                      DiffStates.ACCEPTED,
+                    ]}
+                    slaBridgeStatus={
+                      index < 2
+                        ? SlaBridgeStatus.ERROR
+                        : index < 5
+                        ? SlaBridgeStatus.WARNING
+                        : undefined
+                    }
+                  />
+                );
+              })}
             </List>
           </Typography>
         </AccordionDetails>

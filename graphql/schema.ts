@@ -4,7 +4,7 @@ const typeDefs = gql`
   scalar Date
   enum DifferentialType {
     AUTHORED
-    RESPONSIBLE_FOR
+    NEED_MY_REVIEW
   }
   enum DifferentialStatus {
     DRAFT
