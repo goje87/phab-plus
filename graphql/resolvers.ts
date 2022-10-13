@@ -144,9 +144,12 @@ const resolvers = {
             );
             await insertDiffs(formattedDiffs);
             return Differential.find({
-              $or: [{ status: DifferentialStatus.UP_FOR_REVIEW }],
               authoredBy: phid,
               diffType: differentialType,
+              $or: [
+                { status: DifferentialStatus.UP_FOR_REVIEW },
+                { status: DifferentialStatus.CHANGES_REQUESTED },
+              ],
             });
           }
         }
@@ -188,6 +191,22 @@ const resolvers = {
       ctx.res.clearCookie(TOKEN_KEY);
       return {
         status: 200,
+      };
+    },
+    changeDiffStatus: async (_: any, args: any): Promise<object> => {
+      const { diffId, status } = args.input;
+      try {
+        await Differential.findOneAndUpdate(
+          { diffId: diffId },
+          {
+            $set: { status: status },
+          }
+        );
+      } catch (error) {
+        console.log(error.message);
+      }
+      return {
+        success: true,
       };
     },
   },
