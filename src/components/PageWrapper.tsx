@@ -1,6 +1,11 @@
+import styled from '@emotion/styled';
 import React from 'react';
 import { Container, Navbar } from '../App.style';
 import Header from './Header';
+
+const Content = styled.div`
+  padding: 98px 32px;
+`;
 
 export const PageWrapper: React.FC<{ showHeader: boolean }> = ({
   showHeader,
@@ -13,7 +18,7 @@ export const PageWrapper: React.FC<{ showHeader: boolean }> = ({
           <Header />
         </Navbar>
       )}
-      {children}
+      <Content>{children}</Content>
     </Container>
   );
 };
