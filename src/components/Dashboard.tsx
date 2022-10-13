@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { SIGN_OUT_USER } from '../graphql/mutations';
 import { Container, Heading } from '../styles/Dashboard.style';
 import { NextButton, ButtonWrap } from '../styles/Authenticate.style';
+import { GET_DIFFERENTIALS } from '../graphql/queries';
 
 export const Dashboard = (): JSX.Element => {
   const auth = useAuth();
@@ -14,6 +15,12 @@ export const Dashboard = (): JSX.Element => {
   const [signOutUser] = useMutation(SIGN_OUT_USER, {
     onCompleted: (): void => {
       redirect('/');
+    },
+  });
+
+  const [getDifferentials] = useLazyQuery(GET_DIFFERENTIALS, {
+    variables: {
+      differentialType: 'AUTHORED',
     },
   });
 
@@ -29,6 +36,7 @@ export const Dashboard = (): JSX.Element => {
       {!isLoaded && null}
       {isLoaded && (
         <Container>
+          <NextButton onClick={() => getDifferentials()}>callQuery</NextButton>
           <Heading className='animate__animated animate__fadeInDown'>
             Authenticated
           </Heading>

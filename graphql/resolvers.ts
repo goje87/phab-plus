@@ -79,7 +79,7 @@ const transformPhabricatorDiff = (
     diffType: diffType,
     status: phabStatusIdToDiffStatus[diff.status],
     title: diff.title,
-    url: diff.url,
+    url: diff.uri,
     authoredBy: diff.authorPHID,
   }));
 };
@@ -99,7 +99,7 @@ const addUser = async (userName: string) => {
 const getUserPhId = (token: string) => {
   try {
     const userData = JSON.parse(token);
-    return userData.phid;
+    return userData.phId;
   } catch (error) {
     throw new Error(error.message);
   }

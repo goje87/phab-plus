@@ -93,4 +93,5 @@ export default Differential;
 // Sailing - accepted,
 // closed - closed, abdonded
 // getDiff - fetch open, need review, need revision, accepted
-// changeState - mutation
+
+// changeState - mutation - metadata changes -

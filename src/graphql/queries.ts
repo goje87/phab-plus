@@ -15,3 +15,17 @@ export const IS_AUTHENTICATED = gql`
     }
   }
 `;
+
+export const GET_DIFFERENTIALS = gql`
+  query getDifferentials($differentialType: DifferentialType) {
+    getDifferentials(differentialType: $differentialType) {
+      _id
+      diffId
+      title
+      url
+      status
+      diffType
+      authoredBy
+    }
+  }
+`;
