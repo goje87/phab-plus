@@ -15,6 +15,7 @@ export enum DiffStates {
   READY_FOR_REVIEW = 'READY_FOR_REVIEW',
   CHANGES_REQUESTED = 'CHANGES_REQUESTED',
   READY_TO_SAIL = 'READY_TO_SAIL',
+  ACCEPTED = 'ACCEPTED',
 }
 
 const diffStatesText = {
@@ -22,6 +23,7 @@ const diffStatesText = {
   [DiffStates.READY_FOR_REVIEW]: 'Ready for Review',
   [DiffStates.CHANGES_REQUESTED]: 'Changes Requested / Commented',
   [DiffStates.READY_TO_SAIL]: 'Ready to sail',
+  [DiffStates.ACCEPTED]: 'Accepted',
 };
 
 export const DifferentialListItem = ({

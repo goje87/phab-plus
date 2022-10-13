@@ -54,7 +54,7 @@ export const Header = () => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            PHABRICATOR++
           </Typography>
 
           <Tabs
