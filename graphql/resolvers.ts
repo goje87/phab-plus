@@ -38,13 +38,6 @@ const getAuthoredDiffsFromPhabricator = async (phid: string) => {
       status: PhabricatorDiffStatusName.NEED_REVIEW,
     });
 
-  console.log(
-    needRevisionDiffs,
-    needReviewDiffs,
-    needRevisionErrorCode,
-    needReviewErrorCode
-  );
-
   if (!needReviewErrorCode && !needRevisionErrorCode)
     return [...needReviewDiffs, ...needRevisionDiffs];
 
@@ -105,6 +98,16 @@ const getUserPhId = (token: string) => {
   }
 };
 
+const insertDiffs = async (diffs: Array<IDifferential>) => {
+  try {
+    await Differential.insertMany(diffs, {
+      ordered: false,
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const resolvers = {
   Query: {
     async getUserByUserName(_: any, args: any): Promise<object> {
@@ -125,8 +128,7 @@ const resolvers = {
               authoredDiffs,
               differentialType
             );
-            console.log(formattedDiffs);
-            await Differential.updateMany(formattedDiffs);
+            await insertDiffs(formattedDiffs);
             return Differential.find({
               authoredBy: phid,
               diffType: differentialType,
@@ -140,7 +142,7 @@ const resolvers = {
               authoredDiffs,
               differentialType
             );
-            await Differential.updateMany(formattedDiffs);
+            await insertDiffs(formattedDiffs);
             return Differential.find({
               $or: [{ status: DifferentialStatus.UP_FOR_REVIEW }],
               authoredBy: phid,

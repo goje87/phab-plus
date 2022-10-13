@@ -9,7 +9,7 @@ const typeDefs = gql`
   enum DifferentialStatus {
     DRAFT
     UP_FOR_REVIEW
-    COMMENTED
+    CHANGES_REQUESTED
     ACCEPTED
     CLOSED
   }
