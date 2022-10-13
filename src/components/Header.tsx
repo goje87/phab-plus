@@ -14,10 +14,7 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { SIGN_OUT_USER } from '../graphql/mutations';
-import { useAuth } from '../hooks/useAuth';
 import { routes } from '../routes';
-
-const settings = ['Sign Out'];
 
 export const Header = () => {
   const { pathname } = useLocation();

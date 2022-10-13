@@ -1,26 +1,25 @@
+import { useQuery } from '@apollo/client';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  List,
+  Typography,
+} from '@mui/material';
 import * as React from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { SIGN_OUT_USER } from '../graphql/mutations';
-import { Container, Heading } from '../styles/Dashboard.style';
-import { NextButton, ButtonWrap } from '../styles/Authenticate.style';
 import { GET_DIFFERENTIALS } from '../graphql/queries';
-import Header from './Header';
+import { useAuth } from '../hooks/useAuth';
+import { DifferentialListItem, DiffStates } from './DifferentialListItem';
 import { PageWrapper } from './PageWrapper';
+
+const needReview = ['D12345', 'D47567', 'D58048'];
 
 export const NeedMyReviewDiffs = (): JSX.Element => {
   const auth = useAuth();
   const [isLoaded, setIsLoaded] = React.useState<boolean>(false);
-
   const redirect = (path: string) => (window.location.href = path);
-
-  const [signOutUser] = useMutation(SIGN_OUT_USER, {
-    onCompleted: (): void => {
-      redirect('/');
-    },
-  });
-
-  const [getDifferentials] = useLazyQuery(GET_DIFFERENTIALS, {
+  const { loading, error, data } = useQuery(GET_DIFFERENTIALS, {
     variables: {
       differentialType: 'AUTHORED',
     },
@@ -33,20 +32,35 @@ export const NeedMyReviewDiffs = (): JSX.Element => {
       redirect('/');
     }
   }, [auth]);
+
+  if (!isLoaded) {
+    return null;
+  }
+
   return (
     <PageWrapper showHeader>
-      {!isLoaded && null}
-      {isLoaded && (
-        <Container>
-          <NextButton onClick={() => getDifferentials()}>callQuery</NextButton>
-          <Heading className='animate__animated animate__fadeInDown'>
-            Authenticated
-          </Heading>
-          <ButtonWrap style={{ width: 'unset' }}>
-            <NextButton onClick={() => signOutUser()}>Sign Out</NextButton>
-          </ButtonWrap>
-        </Container>
-      )}
+      <Accordion expanded>
+        <AccordionSummary aria-controls='panel1a-content' id='panel1a-header'>
+          <Typography>Need My Review</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            <List>
+              {needReview.map(diff => (
+                <DifferentialListItem
+                  key={diff}
+                  diffId={diff}
+                  status={DiffStates.READY_FOR_REVIEW}
+                  nextStates={[
+                    DiffStates.CHANGES_REQUESTED,
+                    DiffStates.ACCEPTED,
+                  ]}
+                />
+              ))}
+            </List>
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
     </PageWrapper>
   );
 };

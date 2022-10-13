@@ -1,26 +1,17 @@
 import { useQuery } from '@apollo/client';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
-  AccordionSummary,
-  Typography,
   AccordionDetails,
-  Avatar,
-  IconButton,
+  AccordionSummary,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
+  Typography,
 } from '@mui/material';
 import * as React from 'react';
 import { GET_DIFFERENTIALS } from '../graphql/queries';
 import { useAuth } from '../hooks/useAuth';
-import { PageWrapper } from './PageWrapper';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DifferentialListItem, DiffStates } from './DifferentialListItem';
+import { PageWrapper } from './PageWrapper';
 
 const draftDiffs = ['D12345', 'D47567', 'D58048'];
 const reviewDiffs = ['D80960', 'D48394', 'D79274'];
@@ -51,7 +42,7 @@ export const MyDiffs = (): JSX.Element => {
 
   return (
     <PageWrapper showHeader>
-      <Accordion>
+      <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel1a-content'
